@@ -16,7 +16,7 @@ fi
 if [ -f $ENV_DIR/CUSTOM_ENTRY_CMD ]; then
 	CUSTOM_ENTRY_CMD=`cat $ENV_DIR/CUSTOM_ENTRY_CMD`
 else
-	CUSTOM_ENTRY_CMD='npm start'
+	CUSTOM_ENTRY_CMD='pnpm start'
 fi
 
 
