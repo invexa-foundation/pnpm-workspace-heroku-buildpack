@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Ensure wildcards in globs match dotfiles too.
+shopt -s dotglob
+shopt -s extglob
+
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+
+if ! [ -f $ENV_DIR/PNPM_WS_FILTER ]; then
+	echo "PNPM_WS_FILTER is undefined"
+	exit 1
+fi
+
+if [ -f $ENV_DIR/CUSTOM_ENTRY_CMD ]; then
+	CUSTOM_ENTRY_CMD=`cat $ENV_DIR/CUSTOM_ENTRY_CMD`
+else
+	CUSTOM_ENTRY_CMD='npm start'
+fi
+
+
+PNPM_WS_FILTER=`cat $ENV_DIR/PNPM_WS_FILTER`
+echo "-----> invexa pnpm workspace in $PNPM_WS_FILTER"
+echo "       change working directory to $BUILD_DIR";
+cd $BUILD_DIR
+echo "       creating cache: $CACHE_DIR"
+mkdir -p $CACHE_DIR
+TMP_DIR=`mktemp -d $CACHE_DIR/subdirXXXXX`
+echo "       created tmp dir: $TMP_DIR"
+echo "       run pnpm -r build"
+pnpm -r build
+echo "       run pnpm $PNPM_WS_FILTER deploy $TMP_DIR/"
+pnpm $PNPM_WS_FILTER deploy $TMP_DIR/
+echo "       pnpm deploy done!"
+echo "       remove the unnecessary files."
+rm -rf !(.|..|.heroku|.profile.d)
+mv $TMP_DIR/* .
+echo "       write down the Procfile."
+echo "web: $CUSTOM_ENTRY_CMD" > Procfile
+echo "       success!"
+exit 0
