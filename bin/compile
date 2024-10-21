@@ -26,7 +26,7 @@ echo "       change working directory to $BUILD_DIR";
 cd $BUILD_DIR
 echo "       creating cache: $CACHE_DIR"
 mkdir -p $CACHE_DIR
-TMP_DIR=`mktemp -d $CACHE_DIR/subdirXXXXX`
+TMP_DIR=`mktemp -d $CACHE_DIR/deploymentXXXXX`
 echo "       created tmp dir: $TMP_DIR"
 echo "       run pnpm -r build"
 pnpm -r build
