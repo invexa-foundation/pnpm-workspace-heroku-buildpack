@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Ensure wildcards in globs match dotfiles too.
+set -e 
+set -o pipefail
 shopt -s dotglob
 shopt -s extglob
 
